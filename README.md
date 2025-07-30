@@ -78,37 +78,39 @@
 
 #### **1\. 系统架构图**
 
+```mermaid
 graph TD  
-    subgraph TestInstrument \[测试仪主体\]  
-        MCU\[STM32F4 MCU\]  
+    subgraph TestInstrument ["测试仪主体"]
+        MCU["STM32F4 MCU"]  
           
-        subgraph UIM \[用户接口\]  
-            Display\[显示屏\]  
-            Button\[按键\]  
+        subgraph UIM ["用户接口"]
+            Display["显示屏"]  
+            Button["按键"]  
         end
 
-        subgraph TestCircuits \[测试子电路\]  
-            TDR\_Gen\[TDR脉冲发生器\]  
-            TDR\_Det\[TDR反射检测电路\]  
-            DDS\_Gen\[30MHz DDS信号源\]  
-            AC\_Det\[高频幅度检测电路\]  
-            DC\_Res\[直流电阻测量电路\]  
+        subgraph TestCircuits ["测试子电路"]
+            TDR_Gen["TDR脉冲发生器"]  
+            TDR_Det["TDR反射检测电路"]  
+            DDS_Gen["30MHz DDS信号源"]  
+            AC_Det["高频幅度检测电路"]  
+            DC_Res["直流电阻测量电路"]  
         end
 
-        SwitchMatrix\[模拟开关矩阵 (4x 74HC4051)\]  
+        SwitchMatrix["模拟开关矩阵 (4x 74HC4051)"]  
           
-        MCU \--\> UIM  
-        MCU \--\> TestCircuits  
-        MCU \-- Control \--\> SwitchMatrix
+        MCU --> UIM  
+        MCU --> TestCircuits  
+        MCU -- Control --> SwitchMatrix
 
-        TestCircuits \-- Signals \--\> SwitchMatrix  
+        TestCircuits -- Signals --> SwitchMatrix  
           
-        SwitchMatrix \-- IO\_A \--\> RJ45\_1\[端口1 (RJ45)\]  
-        SwitchMatrix \-- IO\_B \--\> RJ45\_2\[端口2 (RJ45)\]  
+        SwitchMatrix -- IO_A --> RJ45_1["端口1 (RJ45)"]  
+        SwitchMatrix -- IO_B --> RJ45_2["端口2 (RJ45)"]  
     end
 
-    Cable\[被测双绞线\]  
-    RJ45\_1 \<--\> Cable \<--\> RJ45\_2
+    Cable["被测双绞线"]  
+    RJ45_1 <--> Cable <--> RJ45_2
+```
 
 #### **2\. 各功能实现方法**
 
@@ -222,34 +224,36 @@ graph TD
 
 #### **1\. 架构图**
 
+```mermaid
 graph TD  
-    subgraph A\[寻迹小车系统 (Chassis System)\]  
-        direction LR  
-        MSPM0\[TI MSPM0 MCU \<br/\>(强制)\]  
-        IR\[红外循迹传感器阵列\] \--\> MSPM0  
-        Encoder\[电机编码器\] \--\> MSPM0  
-        MSPM0 \--\> Driver\[电机驱动模块\]  
-        Driver \--\> Motors\[直流减速电机\]  
+    subgraph A["寻迹小车系统 (Chassis System)"]
+        direction LR
+        MSPM0["TI MSPM0 MCU<br/>(强制)"]  
+        IR["红外循迹传感器阵列"] --> MSPM0  
+        Encoder["电机编码器"] --> MSPM0  
+        MSPM0 --> Driver["电机驱动模块"]  
+        Driver --> Motors["直流减速电机"]  
     end
 
-    subgraph B\[瞄准模块系统 (Aiming Module)\]  
-        direction LR  
-        MCU2\[高性能MCU \<br/\>(如ESP32-S3, OpenMV)\]  
-        Camera\[摄像头\] \--\> MCU2  
-        IMU\[IMU姿态传感器\] \--\> MCU2  
-        MCU2 \--\> Pan\[Pan舵机\]  
-        MCU2 \--\> Tilt\[Tilt舵机\]  
-        MCU2 \--\> Laser\[激光模块\]  
+    subgraph B["瞄准模块系统 (Aiming Module)"]
+        direction LR
+        MCU2["高性能MCU<br/>(如ESP32-S3, OpenMV)"]  
+        Camera["摄像头"] --> MCU2  
+        IMU["IMU姿态传感器"] --> MCU2  
+        MCU2 --> Pan["Pan舵机"]  
+        MCU2 --> Tilt["Tilt舵机"]  
+        MCU2 --> Laser["激光模块"]  
     end
 
-    subgraph C\[电源系统 (Power System)\]  
-        Battery\[锂电池\] \--\> Switch1\[开关1\] \--\> Power1\[电源轨1\] \--\> A  
-        Battery \--\> Switch2\[开关2\] \--\> Power2\[电源轨2\] \--\> B  
-        Switch1 \--\> LED1\[状态灯1\]  
-        Switch2 \--\> LED2\[状态灯2\]  
+    subgraph C["电源系统 (Power System)"]
+        Battery["锂电池"] --> Switch1["开关1"] --> Power1["电源轨1"] --> A  
+        Battery --> Switch2["开关2"] --> Power2["电源轨2"] --> B  
+        Switch1 --> LED1["状态灯1"]  
+        Switch2 --> LED2["状态灯2"]  
     end
 
-    MSPM0 \-- UART/I2C \--\> MCU2
+    MSPM0 -- "UART/I2C" --> MCU2
+```
 
 #### **2\. 寻迹小车系统 (MSPM0控制器)**
 
@@ -368,29 +372,31 @@ graph TD
 
 #### **1\. 系统架构图**
 
+```mermaid
 graph TD  
-    subgraph Receiver \[简易自动接收机\]  
-        direction LR  
-        SMA\[SMA输入\] \--\> LNA\[低噪声放大器\<br/\>(可选,用于-95dBm)\] \--\> TunerIC\[Si4735 收音IC\]  
+    subgraph Receiver ["简易自动接收机"]
+        direction LR
+        SMA["SMA输入"] --> LNA["低噪声放大器<br/>(可选,用于-95dBm)"] --> TunerIC["Si4735 收音IC"]  
           
-        subgraph MCU\_Control \[MCU控制核心\]  
-            MCU\[STM32/ESP32\]  
-            Display\[OLED显示屏\]  
-            Button\[启动按键\]  
-            MCU \-- I2C \--\> TunerIC  
-            MCU \-- I2C \--\> Display  
-            Button \--\> MCU  
+        subgraph MCU_Control ["MCU控制核心"]
+            MCU["STM32/ESP32"]  
+            Display["OLED显示屏"]  
+            Button["启动按键"]  
+            MCU -- I2C --> TunerIC  
+            MCU -- I2C --> Display  
+            Button --> MCU  
         end  
           
-        subgraph AGC\_Audio\_Path \[AGC与音频通路\]  
-            AudioOut\[解调音频输出\] \--\> VCA\[压控放大器\] \--\> PowerAmp\[LM386 功放\] \--\> Load\[8Ω 负载\]  
-            VCA\_Out \--\> MCU\_ADC\[MCU ADC输入\]  
-            MCU\_DAC\[MCU DAC/PWM输出\] \--\> VCA\_Control\[VCA增益控制\]  
+        subgraph AGC_Audio_Path ["AGC与音频通路"]
+            AudioOut["解调音频输出"] --> VCA["压控放大器"] --> PowerAmp["LM386 功放"] --> Load["8Ω 负载"]  
+            VCA_Out --> MCU_ADC["MCU ADC输入"]  
+            MCU_DAC["MCU DAC/PWM输出"] --> VCA_Control["VCA增益控制"]  
         end
 
-        TunerIC \-- Audio \--\> AudioOut  
+        TunerIC -- Audio --> AudioOut  
           
     end
+```
 
 #### **2\. 工作流程与软件实现**
 
